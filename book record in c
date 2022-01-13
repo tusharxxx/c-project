@@ -1,0 +1,145 @@
+#include<stdio.h>
+#include<conio.h>
+#include<stdlib.h>
+
+#define MAX_AUTHOR_NAME 50
+#define MAX_BOOK_NAME 50
+
+
+typedef struct// to call in program
+{
+    int Pub_date; // declare the integer data type
+    char authorname[MAX_AUTHOR_NAME];// declare the charecter data type
+    char bookname[MAX_BOOK_NAME];// declare the character data type
+    int price;
+} s_BookInfo;
+
+
+
+void menu()
+{
+    system("cls");
+    printf("\t\t\t###########################################################################");
+    printf("\n\t\t\t############                                                   ############");
+    printf("\n\t\t\t###########  BOOK REGISTER FOR LIBRAREY PROJECT in C     ############");
+    printf("\n\t\t\t############                                                   ############");
+    printf("\n\t\t\t###########################################################################");
+    printf("\n\t\t\t---------------------------------------------------------------------------\n");
+    printf("\n\t\t\t----------------------------------------------------------------------------");
+
+
+    int choice = 0;
+    do
+    {
+        printf("\n\n\n\t\t\t1.Add Book");
+        printf("\n\t\t\t2.Print record");
+        printf("\n\t\t\t0.Exit");
+        printf("\n\n\n\t\t\tEnter choice => ");
+        scanf("%d",&choice);
+        switch(choice)
+        {
+        case 1:
+            addBookInDataBase();
+            break;
+
+        case 2:
+            viewRecord();
+            break;
+
+        case 0:
+            printf("\n\n\n\t\t\t\tThank you!!!\n\n\n\n\n");
+            exit(1);
+            break;
+        default:
+            printf("\n\n\n\t\t\tINVALID INPUT!!! Try again...");
+        }                                            //Switch Ended
+    }
+    while(choice!=0);                                        //Loop Ended
+}
+
+void addBookInDataBase()
+{
+    system("cls");
+    s_BookInfo addBookInfoInDataBase = {0};
+    FILE *fp = NULL;
+    int status = 0;
+    fp = fopen("record.txt","a+");
+    if(fp == NULL)
+    {
+        printf("File is not opened\n");
+        exit(1);
+    }
+
+    printf("\n\n\t\t\tENTER YOUR DETAILS BELOW:");
+    printf("\n\t\t\t---------------------------------------------------------------------------\n");
+    printf("\n\t\t\t Name of the BOOK  = ");
+    fflush(stdin);
+    fgets(addBookInfoInDataBase.bookname,MAX_BOOK_NAME,stdin);
+        printf("\n\t\t\tAuthor Name  = ");
+        fflush(stdin);
+        fgets(addBookInfoInDataBase.authorname,MAX_AUTHOR_NAME,stdin);
+
+
+        printf("\n\t\t\tPUBLISHING DATE   = ");
+        fflush(stdin);
+        scanf("%d",&addBookInfoInDataBase.Pub_date);
+
+
+        printf("\n\t\t\t price   = ");
+        fflush(stdin);
+        scanf("%d",&addBookInfoInDataBase.price);
+
+
+
+    fwrite(&addBookInfoInDataBase,sizeof(addBookInfoInDataBase), 1, fp);
+    fclose(fp);
+
+    printf("Book added successfully");
+    printf("\n\n\t\t\tPress any key to go to main menu.....");
+    fflush(stdin);
+    getchar();
+}
+
+void viewRecord()
+{
+    system("cls");
+    int found = 0;
+    s_BookInfo addBookInfoInDataBase = {0};
+    FILE *fp = NULL;
+    unsigned int countBook = 1;
+
+    fp = fopen("record.txt","r+");
+    if(fp == NULL)
+    {
+        printf("File is not opened\n");
+        exit(1);
+    }
+
+    while (fread (&addBookInfoInDataBase, sizeof(addBookInfoInDataBase), 1, fp))
+    {
+        printf("\n\t\t\tBook Count = %d\n\n",countBook);
+        printf("\t\t\tBook Name = %s\n",addBookInfoInDataBase.bookname);
+        printf("\t\t\tAuthor Name = %s\n",addBookInfoInDataBase.authorname);
+        printf("\t\t\tpublishing DATE = %d\n",addBookInfoInDataBase.Pub_date);
+        printf("\t\t\tprice = %d\n",addBookInfoInDataBase.price);
+
+        found = 1;
+        ++countBook;
+    }
+    fclose(fp);
+    if(!found)
+    {
+        printf("\n\t\t\tNo Record");
+    }
+    printf("\n\n\t\t\tPress any key to go to main menu.....");
+    fflush(stdin);
+    getchar();
+}
+
+
+int main()
+{
+menu();
+
+return 1;
+}
